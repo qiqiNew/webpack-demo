@@ -5,8 +5,8 @@
 // require('./main.css')
 // require('./main.scss')
 
-import '../css/main.scss'
-import '../css/main.css'
+import '../css/common.scss'
+import '../css/index.css'
 import $ from 'jquery'
 import moment from 'moment'
 import sub from '../js/sub'

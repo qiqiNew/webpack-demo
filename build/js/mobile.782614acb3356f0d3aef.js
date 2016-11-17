@@ -1,12 +1,13 @@
-webpackJsonp([1],[
-/* 0 */
+webpackJsonp([1],{
+
+/***/ 0:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
 	__webpack_require__(1);
 	
-	__webpack_require__(5);
+	__webpack_require__(121);
 	
 	var _jquery = __webpack_require__(8);
 	
@@ -25,6 +26,14 @@ webpackJsonp([1],[
 	  (0, _jquery2.default)('body').append('<p>look at me! now is ' + (0, _moment2.default)().format() + '</p>');
 	});
 
+/***/ },
+
+/***/ 121:
+/***/ function(module, exports) {
+
+	// removed by extract-text-webpack-plugin
+
 /***/ }
-]);
-//# sourceMappingURL=mobile.4bab43935897f7fddf75.js.map
+
+});
+//# sourceMappingURL=mobile.782614acb3356f0d3aef.js.map

@@ -1,5 +1,5 @@
-import '../css/main.scss'
-import '../css/main.css'
+import '../css/common.scss'
+import '../css/mobile.css'
 import $ from 'jquery'
 import moment from 'moment'
 

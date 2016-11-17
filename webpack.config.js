@@ -72,7 +72,8 @@ module.exports = {
       url: 'http://localhost:8080'
     }),
     new webpack.optimize.CommonsChunkPlugin('js/vendors', 'js/vendors.js'),//把入口文件里面的数组打包成verdors.js
-    new extractTextPlugin("style.css") //获取所有的css文件，并将其内容整合，生成一个单独的css文件'style.css'
+    //new extractTextPlugin("style.css") //获取所有的css文件，并将其内容整合，生成一个单独的css文件'style.css'
+    new extractTextPlugin("./css/[name].css") // 取决于entry
   ],
   devServer: {
     historyApiFallback: true,
