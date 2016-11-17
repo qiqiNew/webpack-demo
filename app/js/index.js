@@ -5,11 +5,11 @@
 // require('./main.css')
 // require('./main.scss')
 
-import './main.scss'
-import './main.css'
+import '../css/main.scss'
+import '../css/main.css'
 import $ from 'jquery'
 import moment from 'moment'
-import sub from './sub'
+import sub from '../js/sub'
 
 var app = document.createElement('div')
 app.innerHTML = '<h1>Hello World</h1>'

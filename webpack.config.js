@@ -9,17 +9,20 @@ var ROOT_PATH = path.resolve(__dirname) // path.resolve解析为绝对路径, __
 var APP_PATH = path.resolve(ROOT_PATH, 'app')
 var BUILD_PATH = path.resolve(ROOT_PATH, 'build')
 var NODE_MODULES = path.resolve(ROOT_PATH, 'node_modules')
+var TEM_PATH = path.resolve(APP_PATH, 'templates')
 
 
 module.exports = {
   // 多入口，分离第三方库和自身文件
   entry: {
-    app: path.resolve(APP_PATH, 'index.js'),
-    vendors: ['jquery', 'moment']
+    // 一共三个入口文件，一个页面引用app.js vendors.js 另一个页面引用 mobile.js vendors.js
+    'js/mobile': path.resolve(APP_PATH, 'js/mobile.js'),
+    'js/app': path.resolve(APP_PATH, 'js/index.js'),
+    'js/vendors': ['jquery', 'moment']
   },
   output: {
     path: BUILD_PATH,
-    filename: 'bundle.js'
+    filename: '[name].js'
   },
   module: {
     loaders: [
@@ -47,13 +50,23 @@ module.exports = {
     ]
   },
   plugins: [
+    // 创建两个htmlWebpackPlugin实例，生成两个页面
     new htmlWebpackPlugin({
-      title: 'hello webpack'
+      title: 'hello webpack --- index页面',
+      template: path.resolve(TEM_PATH, 'index.html'), // 模板地址
+      filename: 'index.html', // 编译生成的页面名称
+      chunks: ['js/app', 'js/vendors'] // 指定页面入口
+    }),
+    new htmlWebpackPlugin({
+      title: 'hello webpack --- mobile页面',
+      template: path.resolve(TEM_PATH, 'index.html'), // 模板地址
+      filename: 'mobile.html', // 编译生成的页面名称
+      chunks: ['js/mobile', 'js/vendors'] // 指定页面入口
     }),
     new openBrowserPlugin({
       url: 'http://localhost:8080'
     }),
-    new webpack.optimize.CommonsChunkPlugin('vendors', 'vendors.js')//把入口文件里面的数组打包成verdors.js
+    new webpack.optimize.CommonsChunkPlugin('js/vendors', 'js/vendors.js')//把入口文件里面的数组打包成verdors.js
   ],
   devServer: {
     historyApiFallback: true,
