@@ -1,8 +1,11 @@
 var path = require('path')
+var webpack = require('webpack')
+
+// 插件
 var htmlWebpackPlugin = require('html-webpack-plugin') // 自动生成html文件的插件
 var openBrowserPlugin = require('open-browser-webpack-plugin') // 自动打开浏览器插件
-var extractTextPlugin = require('extract-text-webpack-plugin') // 单独样式文件style插入
-var webpack = require('webpack')
+var extractTextPlugin = require('extract-text-webpack-plugin') // 单独样式文件style插入(extract-text-webpack-plugin运用了css-loader和style-loader将所有的css统一处理并根据结果生成一个单独的css文件（style.css），将文件链接插入到html文件中)
+
 
 // 定义一些文件夹路径
 var ROOT_PATH = path.resolve(__dirname) // path.resolve解析为绝对路径, __dirname其实就是绝对路径
@@ -22,17 +25,19 @@ module.exports = {
   },
   output: {
     path: BUILD_PATH,
-    filename: '[name].js'
+    filename: '[name].[hash].js' // hash名称的script防止缓存
   },
   module: {
     loaders: [
       {
         test: /\.scss$/,
-        loader: 'style-loader!css-loader!sass-loader'
+        loader: extractTextPlugin.extract('style-loader', 'css-loader!sass-loader?sourceMap')
+        //loader: 'style-loader!css-loader!sass-loader?sourceMap' // css启用sourcemap
       },
       {
         test: /\.css$/,
-        loader: 'style-loader!css-loader', // load处理顺序从右往左
+        loader: extractTextPlugin.extract('style-loader', 'css-loader'),
+        //loader: 'style-loader!css-loader??sourceMap', // load处理顺序从右往左
         indlude: APP_PATH // 限定文件
       },
       {
@@ -66,7 +71,8 @@ module.exports = {
     new openBrowserPlugin({
       url: 'http://localhost:8080'
     }),
-    new webpack.optimize.CommonsChunkPlugin('js/vendors', 'js/vendors.js')//把入口文件里面的数组打包成verdors.js
+    new webpack.optimize.CommonsChunkPlugin('js/vendors', 'js/vendors.js'),//把入口文件里面的数组打包成verdors.js
+    new extractTextPlugin("style.css") //获取所有的css文件，并将其内容整合，生成一个单独的css文件'style.css'
   ],
   devServer: {
     historyApiFallback: true,
