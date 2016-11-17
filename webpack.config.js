@@ -2,6 +2,7 @@ var path = require('path')
 var htmlWebpackPlugin = require('html-webpack-plugin') // 自动生成html文件的插件
 var openBrowserPlugin = require('open-browser-webpack-plugin') // 自动打开浏览器插件
 var extractTextPlugin = require('extract-text-webpack-plugin') // 单独样式文件style插入
+var webpack = require('webpack')
 
 // 定义一些文件夹路径
 var ROOT_PATH = path.resolve(__dirname) // path.resolve解析为绝对路径, __dirname其实就是绝对路径
@@ -11,8 +12,11 @@ var NODE_MODULES = path.resolve(ROOT_PATH, 'node_modules')
 
 
 module.exports = {
-  // 单个入口，用文件夹名称，默认找index.js
-  entry: APP_PATH,
+  // 多入口，分离第三方库和自身文件
+  entry: {
+    app: path.resolve(APP_PATH, 'index.js'),
+    vendors: ['jquery', 'moment']
+  },
   output: {
     path: BUILD_PATH,
     filename: 'bundle.js'
@@ -48,7 +52,8 @@ module.exports = {
     }),
     new openBrowserPlugin({
       url: 'http://localhost:8080'
-    })
+    }),
+    new webpack.optimize.CommonsChunkPlugin('vendors', 'vendors.js')//把入口文件里面的数组打包成verdors.js
   ],
   devServer: {
     historyApiFallback: true,
@@ -62,5 +67,10 @@ module.exports = {
       }
     }
   },
-  devtool: 'source-map'
+  devtool: 'source-map',
+  resolve: {
+    extension: ['', '.jsx', '.js', '.json'], // 省略后缀
+    // 提高搜索速度
+    alias: {}
+  }
 }
