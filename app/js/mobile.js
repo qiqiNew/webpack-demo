@@ -1,6 +1,6 @@
 import '../css/common.scss'
 import '../css/mobile.css'
-import $ from 'jquery'
+//import $ from 'jquery'
 import moment from 'moment'
 
 $(function(){

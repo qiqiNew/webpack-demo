@@ -18,10 +18,10 @@ var TEM_PATH = path.resolve(APP_PATH, 'templates')
 module.exports = {
   // 多入口，分离第三方库和自身文件
   entry: {
-    // 一共三个入口文件，一个页面引用app.js vendors.js 另一个页面引用 mobile.js vendors.js
+    // 一共三个入口文件，一个页面引用app.js vendors.js 另一个页面引用 mobile.js vendors.js。属性值有分级别作用
     'js/mobile': path.resolve(APP_PATH, 'js/mobile.js'),
-    'js/app': path.resolve(APP_PATH, 'js/index.js'),
-    'js/vendors': ['jquery', 'moment']
+    'js/index': path.resolve(APP_PATH, 'js/index.js'),
+    'js/vendors': ['moment'] // 所有第三方库单独合并打包
   },
   output: {
     path: BUILD_PATH,
@@ -31,13 +31,13 @@ module.exports = {
     loaders: [
       {
         test: /\.scss$/,
-        loader: extractTextPlugin.extract('style-loader', 'css-loader!sass-loader?sourceMap')
-        //loader: 'style-loader!css-loader!sass-loader?sourceMap' // css启用sourcemap
+        //loader: extractTextPlugin.extract('style-loader', 'css-loader!sass-loader?sourceMap') 配合插件使用new extractTextPlugin
+        loader: 'style-loader!css-loader!sass-loader?sourceMap' // css启用sourcemap
       },
       {
         test: /\.css$/,
-        loader: extractTextPlugin.extract('style-loader', 'css-loader'),
-        //loader: 'style-loader!css-loader??sourceMap', // load处理顺序从右往左
+        //loader: extractTextPlugin.extract('style-loader', 'css-loader?sourceMap'),
+        loader: 'style-loader!css-loader??sourceMap', // load处理顺序从右往左
         indlude: APP_PATH // 限定文件
       },
       {
@@ -60,7 +60,7 @@ module.exports = {
       title: 'hello webpack --- index页面',
       template: path.resolve(TEM_PATH, 'index.html'), // 模板地址
       filename: 'index.html', // 编译生成的页面名称
-      chunks: ['js/app', 'js/vendors'] // 指定页面入口
+      chunks: ['js/index', 'js/vendors'] // 指定页面入口
     }),
     new htmlWebpackPlugin({
       title: 'hello webpack --- mobile页面',
@@ -71,9 +71,12 @@ module.exports = {
     new openBrowserPlugin({
       url: 'http://localhost:8080'
     }),
-    new webpack.optimize.CommonsChunkPlugin('js/vendors', 'js/vendors.js'),//把入口文件里面的数组打包成verdors.js
-    //new extractTextPlugin("style.css") //获取所有的css文件，并将其内容整合，生成一个单独的css文件'style.css'
-    new extractTextPlugin("./css/[name].css") // 取决于entry
+    new webpack.optimize.CommonsChunkPlugin('js/vendors', 'js/vendors.js'),//把入口文件里面的数组打包成verdors.js（其实入口处已经把第三方库提取出来了，这里貌似感觉只是换了下名字去掉了hash）
+    new webpack.ProvidePlugin({ // 将jquery变成全局变量，文件中不需要再require('jquery')
+      $: "jquery"
+    }),
+    //new extractTextPlugin("./style.css") //获取所有的css文件，并将其内容整合，生成一个单独的css文件'style.css' 这种方式相同的选择器样式可能覆盖
+    //new extractTextPlugin("./css/[name].css") // 取决于entry 所以会生成css/js/index.css css/js/mobile.css css/js/vendors.css
   ],
   devServer: {
     historyApiFallback: true,
